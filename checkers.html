@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="style.css"/>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="board.js"></script>
+	<title>Checkers</title>
+	<script src="common.js"> </script>
+	<script src="script.js"> </script>
+	<script src="handle_ai.js"> </script>
+	<script src="support_html.js"> </script>
+	<script src="challange_boards.js"></script>
+	<script src="learn_mode.js"> </script>
+	<script src="next_move_api.js"> </script>
+</head>
+<body>
+	<main>
+		<div class="turn">
+        	<div id="RedTurn">Your Turn |</div>
+        	<div id="BlackTurn">| AI's Turn</div>
+    	</div>
+
+		<div class="class1" id="sec1">
+			<form class="modes">
+				
+				<input type="radio" id="play" name="mode" value="play" onclick="originalBoard();hideTable('sec3_understand');hideUnderstand('understand'); hideRules('sec3_play');">
+				<label for="play">Play</label>
+				<input type="radio" id="understand" name="mode" value="understand" onclick="originalBoard();showTable('sec3_understand');showPoints();hidePlay('play'); hideRules('sec3_play');">
+				<label for="understand">Understand</label>
+				<input type="radio" id="learn" name="mode" value="learn" onclick="learn_mode_board();hideTable('sec3_understand');hidePlay('play');hideRules('sec3_play');">
+				<label for="Learn">Learn</label>
+
+
+			</form>
+			<div class="play_1 box">
+
+				<select name="DifficultyLevel" id="level" class="button button1" onchange="difficultyLevel('level')">
+					<option>Difficulty Level</option>
+					<option value="Easy" id="Easy" >Easy</option>
+					<option value="Medium" id="Medium" >Medium</option>
+					<option value="Hard" id="Hard" >Hard</option>
+				</select>
+
+				<select name="First Turn" id="turn_p" class="button button1" onchange="setTurn('turn_p')">
+					<option>First Turn</option>
+					<option value="You" id="You" >You</option>
+					<option value="AI" id="AI" >AI</option>
+					<option value="Random" id="Random" >Random</option>
+				</select>
+
+				<button class="button button1" id="Play_p" onclick="GameStarted();disableModes('play','understand','learn')"> Play</button>
+				<button class="button button1" id="stop" onclick="GameStopped();disableModes('play','understand','learn')"> Quit</button>
+				<button class="button button1" id="showRules" onclick="showRules('sec3_play','showRules')">Display Rules</button>
+				<button class="button button1" id="showHint" onclick="showHint()">Show Hint</button>
+				<button id="undo" class="undo_button undo_button1" onClick="undoMove()"><img width="90px" margin-right="10px" src="undo.png" /></button>
+
+				
+			</div>
+			<div class="understand_1 box">
+				<select name="Heuristic" id="H" class="button button1" onchange="setHeuristic('H')">
+					<option>Set Heuristic</option>
+					<option value="m1" id="M1" >Monte Carlo</option>
+					<option value="h1" id="H1" >Heuristic1</option>
+					<option value="h2" id="H2" >Heuristic2</option>
+					<option value="h3" id="H3" >Heuristic3</option>
+					<option value="h4" id="H4" >Heuristic4</option>
+					<option value="h5" id="H5" >Heuristic5</option>
+					<option value="h6" id="H6" >Heuristic6</option>
+					<option value="h7" id="H7" >Heuristic7</option>
+					
+				</select>
+				<select name="DifficultyLevel" id="level_u" class="button button1" onchange="difficultyLevel('level_u')">
+					<option>Difficulty Level</option>
+					<option value="Easy" id="Easy" >Easy</option>
+					<option value="Medium" id="Medium" >Medium</option>
+					<option value="Hard" id="Hard" >Hard</option>
+				</select>
+				<select name="First Turn" id="turn_u" class="button button1" onchange="setTurn('turn_u')">
+					<option>First Turn</option>
+					<option value="You" id="You" >You</option>
+					<option value="AI" id="AI" >AI</option>
+					<option value="Random" id="Random" >Random</option>
+				</select>
+				<button class="button button1" id="Play_u" onclick="GameStarted();disableModes('play','understand','learn')"> Play</button>
+				<button class="button button1 box1" id="RedAIMove"  onclick = "changeAItoRed();MakeAIMove();">AI(R)-Move</button>
+				<button class="button button1" id="AIMove" onclick = "changeAItoBlue();MakeAIMove();">AI(B)-Move</button>
+
+				<form class="modes">
+					
+					<label class="container">
+						<input type="checkbox" id="AIAutoMove" onclick="disableAImoveBtn(this)">AI-AutoMove
+						<span class="checkmark"></span>
+					</label><br>
+					<label class="container">
+						<input type="checkbox" id="AIvsAI" onclick="disableAImoveBtnAA(this);showAIBlueBtn(this);">AI-vs-AI 
+						<span class="checkmark"></span>
+					</label><br>	
+					<label class="container">
+						<input type="checkbox" onclick="cellVisibility(this)">Show Cell IDs
+						<span class="checkmark"></span>
+					</label>
+				</form>
+				<div>
+					<a id="heuristic_id"> <h3>Selected Heuristic Function is </h3>(my_pieces - my_king_pieces) - (opp_pieces - opp_king_pieces) + 2 * (my_king_pieces - opp_king_pieces)</a>
+				</div>
+        	
+			</div>
+			<div class="learn_1 box">
+				<select name="DifficultyLevel" id="level_l" class="button button1" onchange="proficiencyLevel('level_l')">
+					<option>Proficiency Level</option>
+					<option value="Easy" id="Easy" >Easy</option>
+					<option value="Medium" id="Medium" >Medium</option>
+					<option value="Hard" id="Hard" >Hard</option>
+				</select>
+				<button class="button button1" id="shuffle" onclick="shuffleBoard()"> Shuffle Board</button>
+				<button class="button button1" id="Play" onclick="learnModePlay()"> Play</button>
+				<button class="button button1" id="stop" onclick="GameStopped();disableModes('play','understand','learn')"> Quit</button>
+				<button class="button button1" id="showRules" onclick="showRules('sec3_play','showRules')">Display Rules</button>
+			</div>
+		</div>
+		<div class="class2" id="sec2">
+			<table class="tableClass" id="checkers">
+				<tr>
+					<td class="emptyCell" id="11"><p><span id="cell11">(11)</span></p></td>
+					<td id="12"><p class="noPiece" id="r11"><span id="cell12">(12)</span></p></td>
+					<td class="emptyCell" id="13"><p><span id="cell13">(13)</span></p></td>
+					<td id="14"><p class="noPiece" id="r12"><span id="cell14">(14)</span></p></td>
+					<td class="emptyCell" id="15"><p><span id="cell15">(15)</span></p></td>
+					<td id="16"><p class="noPiece" id="r13"><span id="cell16">(16)</span></p></td>
+					<td class="emptyCell" id="17"><p><span id="cell17">(17)</span></p></td>
+					<td id="18"><p class="noPiece" id="r14"><span id="cell18">(18)</span></p></td>
+				</tr>
+				<tr>
+					<td id="21"><p class="noPiece" id="r21"><span id="cell21">(21)</span></p></td>
+					<td class="emptyCell" id="22"><p><span id="cell22">(22)</span></p></td>
+					<td id="23"><p class="noPiece" id="r22"><span id="cell23">(23)</span></p></td>
+					<td class="emptyCell" id="24"><p><span id="cell24">(24)</span></p></td>
+					<td id="25"><p class="noPiece" id="r23"><span id="cell25">(25)</span></p></td>
+					<td class="emptyCell" id="26"><p><span id="cell26">(26)</span></p></td>
+					<td id="27"><p class="noPiece" id="r24"><span id="cell27">(27)</span></p></td>
+					<td class="emptyCell" id="28"><p><span id="cell28">(28)</span></p></td>
+				</tr>
+				<tr>
+					<td class="emptyCell" id="31"><p><span id="cell31">(31)</span></p></td>
+					<td id="32"><p class="noPiece" id="r31"><span id="cell32">(32)</span></p></td>
+					<td class="emptyCell" id="33"><p><span id="cell33">(33)</span></p></td>
+					<td id="34"><p class="noPiece" id="r32"><span id="cell34">(34)</span></p></td>
+					<td class="emptyCell" id="35"><p><span id="cell35">(35)</span></p></td>
+					<td id="36"><p class="noPiece" id="r33"><span id="cell36">(36)</span></p></td>
+					<td class="emptyCell" id="37"><p><span id="cell37">(37)</span></p></td>
+					<td id="38"><p class="noPiece" id="r34"><span id="cell38">(38)</span></p></td>
+				</tr>
+				<tr>
+					<td id="41"><p class="noPiece" ><span id="cell41">(41)</span></p></td>
+					<td class="emptyCell" id="42"><p><span id="cell42">(42)</span></p></td>
+					<td  id="43"><p class="noPiece"><span id="cell43">(43)</span></p></td>
+					<td class="emptyCell" id="44"><p><span id="cell44">(44)</span></p></td>
+					<td id="45"><p class="noPiece" ><span id="cell45">(45)</span></p></td>
+					<td class="emptyCell" id="46"><p><span id="cell46">(46)</span></p></td>
+					<td id="47"><p class="noPiece" ><span id="cell47">(47)</span></p></td>
+					<td class="emptyCell" id="48"><p><span id="cell48">(48)</span></p></td>
+				</tr>
+				<tr>
+					<td class="emptyCell" id="51"><p><span id="cell51">(51)</span></p></td>
+					<td id="52"><p class="noPiece" ><span id="cell52">(52)</span></p></td>
+					<td class="emptyCell" id="53"><p><span id="cell53">(53)</span></p></td>
+					<td id="54"><p class="noPiece" ><span id="cell54">(54)</span></p></td>
+					<td class="emptyCell" id="55"><p><span id="cell55">(55)</span></p></td>
+					<td id="56"><p class="noPiece" ><span id="cell56">(56)</span></p></td>
+					<td class="emptyCell" id="57"><p><span id="cell57">(57)</span></p></td>
+					<td id="58"><p class="noPiece" ><span id="cell58">(58)</span></p></td>
+				</tr>
+				<tr>
+					<td id="61"><p class="noPiece" id="b61"><span id="cell61">(61)</span></p></td>
+					<td class="emptyCell" id="62"><p><span id="cell62">(62)</span></p></td>
+					<td id="63"><p class="noPiece" id="b62"><span id="cell63">(63)</span></p></td>
+					<td class="emptyCell" id="64"><p><span id="cell64">(64)</span></p></td>
+					<td id="65"><p class="noPiece" id="b63"><span id="cell65">(65)</span></p></td>
+					<td class="emptyCell" id="66"><p><span id="cell66">(66)</span></p></td>
+					<td id="67"><p class="noPiece" id="b64"><span id="cell67">(67)</span></p></td>
+					<td class="emptyCell" id="68"><p><span id="cell68">(68)</span></p></td>
+				</tr>
+				<tr>
+					<td class="emptyCell" id="71"><p><span id="cell71">(71)</span></p></td>
+					<td id="72"><p class="noPiece" id="b71"><span id="cell72">(72)</span></p></td>
+					<td class="emptyCell" id="73"><p><span id="cell73">(73)</span></p></td>
+					<td id="74"><p class="noPiece" id="b72"><span id="cell74">(74)</span></p></td>
+					<td class="emptyCell" id="75"><p><span id="cell75">(75)</span></p></td>
+					<td id="76"><p class="noPiece" id="b73"><span id="cell76">(76)</span></p></td>
+					<td class="emptyCell" id="77"><p><span id="cell77">(77)</span></p></td>
+					<td id="78"><p class="noPiece" id="b74"><span id="cell78">(78)</span></p></td>
+				</tr>
+				<tr>
+					<td id="81"><p class="noPiece" id="b81"><span id="cell81">(81)</span></p></td>
+					<td class="emptyCell" id="82"><p><span id="cell82">(82)</span></p></td>
+					<td id="83"><p class="noPiece" id="b82"><span id="cell83">(83)</span></p></td>
+					<td class="emptyCell" id="84"><p><span id="cell84">(84)</span></p></td>
+					<td id="85"><p class="noPiece" id="b83"><span id="cell85">(85)</span></p></td>
+					<td class="emptyCell" id="86"><p><span id="cell86">(86)</span></p></td>
+					<td id="87"><p class="noPiece" id="b84"><span id="cell87">(87)</span></p></td>
+					<td class="emptyCell" id="88"><p><span id="cell88">(88)</span></p></td>
+				</tr>
+			</table>
+		</div>
+		<div class="class3_play" id="sec3_play">
+			<div class="class3_1_play" id="rule">
+				<li>Pieces may only move one diagonal space forward (towards their opponents pieces) in the
+				beginning of the game</li>
+				<li>Pieces must stay on the black squares.</li>
+				<li>To capture an opposing piece,"jump" over it by moving two diagonal spaces in the direction of
+				the the opposing piece.</li>
+				<li>A piece may jump forward over an opponent's pieces in multiple parts of the board to capture
+					them.
+				</li>	
+				<li>Keep in mind, the space on the other side of your opponent’s piece must be empty for you to
+					capture it.
+				</li>	
+				<li>If your piece reaches the last row on your opponent's side, you may re-take one of your captured
+				pieces and "crown"the piece that made it to the Kings Row. Thereby making it a "King Piece."</li>
+				<li>King pieces may still only move one space at a time during a non-capturing move. However,
+					when capturing an opponent's piece(s) it may move diagonally forward or backwards.
+				</li>	
+				<li>There is no limit to how many king pieces a player may have.</li>	
+				<li>If you win the game you gain 100 points.</li>
+			</div>
+		</div>
+
+		<!-- Modal class for Move Sequences (Understanding Mode)-->
+		<div id="modalMoveSeq" class="modal">
+
+			<!-- Modal content -->
+			<div class="modal-content">
+				<div class="modal-header">
+					<span class="close">&times;</span>
+					
+					<button class="button button1" id="closeMoveSeq" onclick="closeModalMoveSeq()">Close</button>
+					<button class="button button1" id="prevMoveOfSeq" onclick="prevMoveOfSeq()">Prev Move</button>
+					<button class="button button1" id="nextMoveOfSeq" onclick="nextMoveOfSeq()">Next Move</button>
+					<button class="button button1" id="reviewMoveSeq" onclick="reviewMoveSeq()">Review</button>
+				</div>
+				<div class="modal-body" id="modalBodyMoveSeq">
+
+				</div>
+				
+				<div class="modal-footer">
+					<h1>Press "Next move" button to animate</h1>
+				</div>
+				
+			</div>
+
+		</div>
+
+		<!-- This modal will display "win Message"-->
+		
+			<div id="winMessageModal" class="winModal">
+				<!--<img src="win_img.png" width="200" height="200"> -->
+				<div id="winbody">
+					<div><h1>!! Game Over !!</h1></div>
+					<div id="win"><h2>AI won!!</h2></div>
+					<p></p>
+					<button id="win_undo" class="button button1" onClick="revertBack();">Use a Life</button>
+					<button class="button button1" id="analyse" onclick="analyseGame()">Analyze Mistakes</button>
+					<button class="button button1" id="closeWinMessage" onclick="closeWinMessage()">Close</button>
+				</div>
+			</div>
+		
+
+		<!-- This modal will show analysis of mistakes-->
+		<div id="analyseModal" class="modal">
+			<!-- Modal content -->
+			<div class="modal-content">
+				<div class="modal-header">
+					<span class="close">&times;</span>
+					<div id="mistake_id">Analyze Your Mistakes</div>
+					<button class="button button1" id="closeAnalyse" onclick="closeAnalyseModal()">Close</button>
+					<button class="button button1" id="prev_move" onclick="prevMoveFromAnalysis()">Prev Move</button> 
+					<button class="button button1" id="next_move" onclick="nextMoveFromAnalysis()">Next Move</button> 
+					<button class="button button1" id="review_mistake" onclick="reviewMistake()">Review</button>
+					<button class="button button1" id="prev_mistake" onclick="prevMistake()">Prev Mistake</button>
+					<button class="button button1" id="next_mistake" onclick="nextMistake()">Next Mistake</button>
+				</div>
+
+				<div class="modal-body" id="analyseBody">
+				</div>
+
+				<div class="modal-footer">
+					<h2>Use "Next" and "Prev" button to animate. Hover over pieces to see the gain</h2>
+				</div>
+			</div>
+		</div>
+		
+		<div class="class3_understand" id="sec3_understand">
+			
+			<div class="class3_1_understand" id="move">
+				<h3>Gains of Pieces</h3>
+				<table id="show_table" ></table>
+				<button class="button button1" id="refresh_gains" onclick="refreshGains()">Invert</button>
+			</div>
+		</div>  
+		<script>
+			
+			//var btn = document.getElementById("showHint");
+			//var closebtn = document.getElementById("closeButton");
+
+			var modalBoard = $("#checkers").clone();
+			$("#modalBody").append(modalBoard);	
+			$("#modalBoard").addClass("tableClass");
+
+			var span = document.getElementsByClassName("close")[0];
+			//var modal = document.getElementById("winbody");
+			
+			// window.onclick = function(event) {
+			// 	console.log(event.target)
+			// if (event.target != modal) {
+			// 	modal.style.display = "block";
+			// }
+			// }
+			
+		</script>
+		</main>
+			</body>
+			<! https://www.w3schools.com/howto/howto_js_treeview.asp >
+			<! https://stackoverflow.com/questions/38526371/draw-a-tree-and-dynamic-design-schema-by-css-and-javascript >
+			<! https://www.cssscript.com/semantic-hierarchy-tree-treeflex/>
+			<! https://www.jstree.com/>

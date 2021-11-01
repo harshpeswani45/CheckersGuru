@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="board.js"></script>
+    <title>Checkers</title>
+    <script src="common.js"> </script>
+    <script src="visual_script.js"> </script>
+    <script src = "tree_visualize.js"></script>
+    <script src="handle_ai.js"> </script>
+    <script src="visual_support_html.js"> </script>
+
+	<script src="support_html.js"> </script>
+</head>
+
+<body>
+    <div class="turn">
+        <div id="RedTurn">Your Turn |</div>
+        <div id="BlackTurn">| AI's Turn</div>
+    </div>
+    <div class="class1" id="sec1">
+        <div class="play_1 box">
+            <select name="DifficultyLevel" id="level" class="button button1" onchange="difficultyLevel('level')">
+                <option>Difficulty Level</option>
+                <option value="Easy" id="Easy">Easy</option>
+                <option value="Medium" id="Medium">Medium</option>
+                <option value="Hard" id="Hard">Hard</option>
+            </select>
+
+            <button class="button button1" id="Play_p" onclick="GameStarted();"> Play</button>
+            <button class="button button1" id="stop" onclick="GameStopped();"> Quit</button>
+            <button class="button button1" id="showRules" onclick="showRules('sec3_play','showRules')">Display
+                Rules</button>
+            <button class="button button1" id="showVisualModal" onclick="showVisualization();">Tree Visualization</button>
+            
+            
+
+        </div>
+    </div>
+    <div class="class2" id="sec2">
+        <table class="tableClass" id="checkers">
+				<tr>
+					<td class="emptyCell" id="11"><p><span id="cell11">(11)</span></p></td>
+					<td id="12"><p class="noPiece" id="r11"><span id="cell12">(12)</span></p></td>
+					<td class="emptyCell" id="13"><p><span id="cell13">(13)</span></p></td>
+					<td id="14"><p class="noPiece" id="r12"><span id="cell14">(14)</span></p></td>
+					<td class="emptyCell" id="15"><p><span id="cell15">(15)</span></p></td>
+					<td id="16"><p class="noPiece" id="r13"><span id="cell16">(16)</span></p></td>
+					<td class="emptyCell" id="17"><p><span id="cell17">(17)</span></p></td>
+					<td id="18"><p class="noPiece" id="r14"><span id="cell18">(18)</span></p></td>
+				</tr>
+				<tr>
+					<td id="21"><p class="noPiece" id="r21"><span id="cell21">(21)</span></p></td>
+					<td class="emptyCell" id="22"><p><span id="cell22">(22)</span></p></td>
+					<td id="23"><p class="noPiece" id="r22"><span id="cell23">(23)</span></p></td>
+					<td class="emptyCell" id="24"><p><span id="cell24">(24)</span></p></td>
+					<td id="25"><p class="noPiece" id="r23"><span id="cell25">(25)</span></p></td>
+					<td class="emptyCell" id="26"><p><span id="cell26">(26)</span></p></td>
+					<td id="27"><p class="noPiece" id="r24"><span id="cell27">(27)</span></p></td>
+					<td class="emptyCell" id="28"><p><span id="cell28">(28)</span></p></td>
+				</tr>
+				<tr>
+					<td class="emptyCell" id="31"><p><span id="cell31">(31)</span></p></td>
+					<td id="32"><p class="noPiece" id="r31"><span id="cell32">(32)</span></p></td>
+					<td class="emptyCell" id="33"><p><span id="cell33">(33)</span></p></td>
+					<td id="34"><p class="noPiece" id="r32"><span id="cell34">(34)</span></p></td>
+					<td class="emptyCell" id="35"><p><span id="cell35">(35)</span></p></td>
+					<td id="36"><p class="noPiece" id="r33"><span id="cell36">(36)</span></p></td>
+					<td class="emptyCell" id="37"><p><span id="cell37">(37)</span></p></td>
+					<td id="38"><p class="noPiece" id="r34"><span id="cell38">(38)</span></p></td>
+				</tr>
+				<tr>
+					<td id="41"><p class="noPiece" ><span id="cell41">(41)</span></p></td>
+					<td class="emptyCell" id="42"><p><span id="cell42">(42)</span></p></td>
+					<td  id="43"><p class="noPiece"><span id="cell43">(43)</span></p></td>
+					<td class="emptyCell" id="44"><p><span id="cell44">(44)</span></p></td>
+					<td id="45"><p class="noPiece" ><span id="cell45">(45)</span></p></td>
+					<td class="emptyCell" id="46"><p><span id="cell46">(46)</span></p></td>
+					<td id="47"><p class="noPiece" ><span id="cell47">(47)</span></p></td>
+					<td class="emptyCell" id="48"><p><span id="cell48">(48)</span></p></td>
+				</tr>
+				<tr>
+					<td class="emptyCell" id="51"><p><span id="cell51">(51)</span></p></td>
+					<td id="52"><p class="noPiece" ><span id="cell52">(52)</span></p></td>
+					<td class="emptyCell" id="53"><p><span id="cell53">(53)</span></p></td>
+					<td id="54"><p class="noPiece" ><span id="cell54">(54)</span></p></td>
+					<td class="emptyCell" id="55"><p><span id="cell55">(55)</span></p></td>
+					<td id="56"><p class="noPiece" ><span id="cell56">(56)</span></p></td>
+					<td class="emptyCell" id="57"><p><span id="cell57">(57)</span></p></td>
+					<td id="58"><p class="noPiece" ><span id="cell58">(58)</span></p></td>
+				</tr>
+				<tr>
+					<td id="61"><p class="noPiece" id="b61"><span id="cell61">(61)</span></p></td>
+					<td class="emptyCell" id="62"><p><span id="cell62">(62)</span></p></td>
+					<td id="63"><p class="noPiece" id="b62"><span id="cell63">(63)</span></p></td>
+					<td class="emptyCell" id="64"><p><span id="cell64">(64)</span></p></td>
+					<td id="65"><p class="noPiece" id="b63"><span id="cell65">(65)</span></p></td>
+					<td class="emptyCell" id="66"><p><span id="cell66">(66)</span></p></td>
+					<td id="67"><p class="noPiece" id="b64"><span id="cell67">(67)</span></p></td>
+					<td class="emptyCell" id="68"><p><span id="cell68">(68)</span></p></td>
+				</tr>
+				<tr>
+					<td class="emptyCell" id="71"><p><span id="cell71">(71)</span></p></td>
+					<td id="72"><p class="noPiece" id="b71"><span id="cell72">(72)</span></p></td>
+					<td class="emptyCell" id="73"><p><span id="cell73">(73)</span></p></td>
+					<td id="74"><p class="noPiece" id="b72"><span id="cell74">(74)</span></p></td>
+					<td class="emptyCell" id="75"><p><span id="cell75">(75)</span></p></td>
+					<td id="76"><p class="noPiece" id="b73"><span id="cell76">(76)</span></p></td>
+					<td class="emptyCell" id="77"><p><span id="cell77">(77)</span></p></td>
+					<td id="78"><p class="noPiece" id="b74"><span id="cell78">(78)</span></p></td>
+				</tr>
+				<tr>
+					<td id="81"><p class="noPiece" id="b81"><span id="cell81">(81)</span></p></td>
+					<td class="emptyCell" id="82"><p><span id="cell82">(82)</span></p></td>
+					<td id="83"><p class="noPiece" id="b82"><span id="cell83">(83)</span></p></td>
+					<td class="emptyCell" id="84"><p><span id="cell84">(84)</span></p></td>
+					<td id="85"><p class="noPiece" id="b83"><span id="cell85">(85)</span></p></td>
+					<td class="emptyCell" id="86"><p><span id="cell86">(86)</span></p></td>
+					<td id="87"><p class="noPiece" id="b84"><span id="cell87">(87)</span></p></td>
+					<td class="emptyCell" id="88"><p><span id="cell88">(88)</span></p></td>
+				</tr>
+			</table>
+    </div>
+    <div class="class3_play" id="sec3_play">
+        <div class="class3_1_play" id="rule" style="font-size: 10px;">
+            <li>Pieces may only move one diagonal space forward (towards their opponents pieces) in the
+                beginning of the game</li>
+            <li>Pieces must stay on the black squares.</li>
+            <li>To capture an opposing piece,"jump" over it by moving two diagonal spaces in the direction of
+                the the opposing piece.</li>
+            <li>A piece may jump forward over an opponent's pieces in multiple parts of the board to capture
+                them.
+            </li>
+            <li>Keep in mind, the space on the other side of your opponent’s piece must be empty for you to
+                capture it.
+            </li>
+            <li>If your piece reaches the last row on your opponent's side, you may re-take one of your captured
+                pieces and "crown"the piece that made it to the Kings Row. Thereby making it a "King Piece."</li>
+            <li>King pieces may still only move one space at a time during a non-capturing move. However,
+                when capturing an opponent's piece(s) it may move diagonally forward or backwards.
+            </li>
+            <li>There is no limit to how many king pieces a player may have.</li>
+        </div>
+    </div>
+    <div id="winMessageModal" class="winModal">
+        <!--<img src="win_img.png" width="200" height="200"> -->
+        <div id="winbody">
+            <div>
+                <h1>!! Game Over !!</h1>
+            </div>
+            <div id="win">
+                <h2>AI won!!</h2>
+            </div>
+
+            <button class="button button1" id="closeWinMessage" onclick="closeWinMessage()" style="width:250px;">Close</button>
+        </div>
+    </div>
+    <div id="visualModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+              <!-- <button class="button button1" id="clear_tree" onclick="clear_visualization_tree();">Clear Tree</button> --> 
+              <h2>Press "Update Tree" button to see the tree</h2>
+                <button class="button button1" id="update_tree" onclick="update_visualization_tree();">Update
+                    Tree</button>
+                <button class="button button1" id="close_tree" onclick="closeVisualization();">Close</button>
+                
+            </div>
+
+            <div class="modal-body" id="visualBody">
+            </div>
+
+            <div class="modal-footer">
+            </div>
+        </div>
+        <script>
+
+            var cls = document.getElementsByClassName("box")[0];
+            cls.style.display = "block"
+
+            //=================== Tree visualization code ===============
+            /*
+             <!-- https://www.w3schools.com/howto/howto_js_treeview.asp>
+            <! https://stackoverflow.com/questions/38526371/draw-a-tree-and-dynamic-design-schema-by-css-and-javascript>
+            <! https://www.cssscript.com/semantic-hierarchy-tree-treeflex />
+            <! https://www.jstree.com /> -->
+    
+    
+            <!-- load the d3.js library --> */
+            // ************** Generate the tree diagram	 *****************
+
+            var margin = { top: 50, right: 120, bottom: 20, left: 300 },
+                // width = 960 - margin.right - margin.left,
+                width = 10000;
+            height = 500 - margin.top - margin.bottom;
+            height = 1500 - margin.top - margin.bottom;
+            //height = 1500; // TODO: dynamically change height wrt Difficulty level
+
+            var i = 0,
+                duration = 750,
+                root;
+
+            var tree = d3.layout.tree()
+                .size([height, width]);
+
+            var diagonal = d3.svg.diagonal()
+                .projection(function (d) { return [d.y, d.x]; });
+
+            var svg = d3.select("#visualBody").append("svg")
+                .attr("width", width + margin.right + margin.left)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            d3.select(self.frameElement).style("height", "500px");
+
+            function update(source) {
+
+                // Compute the new tree layout.
+                var nodes = tree.nodes(root).reverse(),
+                    links = tree.links(nodes);
+
+                // Normalize for fixed-depth.
+                nodes.forEach(function (d) { d.y = d.depth * 180; });
+
+                // Update the nodes…
+                var node = svg.selectAll("g.node")
+                    .data(nodes, function (d) { return d.id || (d.id = ++i); });
+
+                // Enter any new nodes at the parent's previous position.
+                var nodeEnter = node.enter().append("g")
+                    .attr("class", "node")
+                    .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+                    .on("click", click);
+
+                nodeEnter.append("circle")
+                    .attr("r", 1e-6)
+                    .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+                nodeEnter.append("text")
+                    .attr("x", function (d) { return d.children || d._children ? -13 : 13; })
+                    .attr("dy", ".35em")
+                    .attr("text-anchor", function (d) { return d.children || d._children ? "end" : "start"; })
+                    .text(function(d) { return d.name; })
+                    // .text(function (d) { return d.name + " (" + d.alpha + ", " + d.beta + ")"; }) // prints "{from_id}->{to_id} ({alpha}, {beta})
+                    .style("fill-opacity", 1e-6);
+
+                // Transition nodes to their new position.
+                var nodeUpdate = node.transition()
+                    .duration(duration)
+                    .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+                nodeUpdate.select("circle")
+                    .attr("r", 10)
+                    .style("fill", function (d) { return d._children ? "lightsteelblue" : "#fff"; });
+
+                nodeUpdate.select("text")
+                    .style("fill-opacity", 1);
+
+                // Transition exiting nodes to the parent's new position.
+                var nodeExit = node.exit().transition()
+                    .duration(duration)
+                    .attr("transform", function (d) { return "translate(" + source.y + "," + source.x + ")"; })
+                    .remove();
+
+                nodeExit.select("circle")
+                    .attr("r", 1e-6);
+
+                nodeExit.select("text")
+                    .style("fill-opacity", 1e-6);
+
+                // Update the links…
+                var link = svg.selectAll("path.link")
+                    .data(links, function (d) { return d.target.id; });
+
+                // Enter any new links at the parent's previous position.
+                link.enter().insert("path", "g")
+                    .attr("class", "link")
+                    .attr("d", function (d) {
+                        var o = { x: source.x0, y: source.y0 };
+                        return diagonal({ source: o, target: o });
+                    });
+
+                // Transition links to their new position.
+                link.transition()
+                    .duration(duration)
+                    .attr("d", diagonal);
+
+                // Transition exiting nodes to the parent's new position.
+                link.exit().transition()
+                    .duration(duration)
+                    .attr("d", function (d) {
+                        var o = { x: source.x, y: source.y };
+                        return diagonal({ source: o, target: o });
+                    })
+                    .remove();
+
+                // Stash the old positions for transition.
+                nodes.forEach(function (d) {
+                    d.x0 = d.x;
+                    d.y0 = d.y;
+                });
+            }
+
+            // Toggle children on click.
+            function click(d) {
+                if (d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                } else {
+                    d.children = d._children;
+                    d._children = null;
+                }
+                update(d);
+            }
+
+        </script>
+        </main>
+</body>
+
+</html>
